@@ -420,7 +420,13 @@ class Application extends \Pimple implements HttpKernelInterface, TerminableInte
      */
     public function json($data = array(), $status = 200, $headers = array())
     {
-        return new JsonResponse($data, $status, $headers);
+        $response = new JsonResponse($data, $status, $headers);
+
+        if ($callback = $app['request']->query->get('callback')) {
+            $response->setCallback($callback);
+        }
+
+        return $response;
     }
 
     /**
