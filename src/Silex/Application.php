@@ -515,4 +515,27 @@ class Application extends \Pimple implements HttpKernelInterface, TerminableInte
     {
         $this['kernel']->terminate($request, $response);
     }
+
+    /**
+     * Resolve callable services as methods of this class.
+     *
+     * @param $method
+     * @param $arguments
+     * @return mixed
+     * @throws \BadMethodCallException
+     */
+    public function __call($method, $arguments)
+    {
+        if (!isset($this[$method])) {
+            throw new \BadMethodCallException(sprintf('Call to undefined method %s::%s()', get_class($this), $method));
+        }
+
+        $callable = $this[$method];
+
+        if (!is_callable($callable)) {
+            throw new \BadMethodCallException(sprintf('The service "%s" is not callable.', $method));
+        }
+
+        return call_user_func_array($callable, $arguments);
+    }
 }
