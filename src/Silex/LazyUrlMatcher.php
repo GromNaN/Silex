@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @author Igor Wiedler <igor@wiedler.ch>
  */
-class LazyUrlMatcher implements UrlMatcherInterface, RequestMatcherInterface
+class LazyUrlMatcher implements RequestMatcherInterface
 {
     private $factory;
 
@@ -33,7 +33,7 @@ class LazyUrlMatcher implements UrlMatcherInterface, RequestMatcherInterface
     /**
      * Returns the corresponding UrlMatcherInterface instance.
      *
-     * @return UrlMatcherInterface
+     * @return UrlMatcherInterface|RequestMatcherInterface
      */
     public function getUrlMatcher()
     {
@@ -43,14 +43,6 @@ class LazyUrlMatcher implements UrlMatcherInterface, RequestMatcherInterface
         }
 
         return $urlMatcher;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function match($pathinfo)
-    {
-        return $this->getUrlMatcher()->match($pathinfo);
     }
 
     /**
@@ -66,21 +58,5 @@ class LazyUrlMatcher implements UrlMatcherInterface, RequestMatcherInterface
         }
 
         return $matcher->match($request->getPathInfo());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContext(SymfonyRequestContext $context)
-    {
-        $this->getUrlMatcher()->setContext($context);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getContext()
-    {
-        return $this->getUrlMatcher()->getContext();
     }
 }
